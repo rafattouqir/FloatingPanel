@@ -91,6 +91,12 @@ public class FloatingPanelController: UIViewController, UIScrollViewDelegate, UI
     /// This property specifies how the content area of the tracking scroll view is modified using `adjustedContentInsets`. The default value of this property is FloatingPanelController.ContentInsetAdjustmentBehavior.always.
     public var contentInsetAdjustmentBehavior: ContentInsetAdjustmentBehavior = .always
 
+    private var _contentViewController: UIViewController?
+    public var contentViewController: UIViewController? {
+        set { set(contentViewController: newValue) }
+        get { return _contentViewController }
+    }
+
     private var floatingPanel: FloatingPanel!
 
     required init?(coder aDecoder: NSCoder) {
@@ -102,7 +108,7 @@ public class FloatingPanelController: UIViewController, UIScrollViewDelegate, UI
     }
 
     /// Initialize a newly created floating panel controller.
-    public init() {
+    public init(contentViewController: UIViewController? = nil) {
         super.init(nibName: nil, bundle: nil)
 
         floatingPanel = FloatingPanel(self,
@@ -241,35 +247,40 @@ public class FloatingPanelController: UIViewController, UIScrollViewDelegate, UI
         floatingPanel.move(to: to, animated: animated, completion: completion)
     }
 
-    /// Presents the specified view controller as the content view controller in the surface view interface.
-    ///
-    /// - Attention:
-    ///     You can't use this method to replace the content view controller.
-    public override func show(_ vc: UIViewController, sender: Any?) {
-        if self.children.first != nil, let ancester = self.parent?.targetViewController(forAction: #selector(show(_:sender:)), sender: sender) {
-            ancester.show(vc, sender: sender)
-            return
+    /// Sets the view controller responsible for the content portion of the floating panel..
+    public func set(contentViewController: UIViewController?) {
+        if let vc = _contentViewController {
+            vc.willMove(toParent: nil)
+            vc.view.removeFromSuperview()
+            vc.removeFromParent()
         }
-        show(vc)
+
+        if let vc = contentViewController {
+            let surfaceView = self.view as! FloatingPanelSurfaceView
+            surfaceView.contentView.addSubview(vc.view)
+            vc.view.frame = surfaceView.contentView.bounds
+            vc.view.translatesAutoresizingMaskIntoConstraints = false
+            NSLayoutConstraint.activate([
+                vc.view.topAnchor.constraint(equalTo: surfaceView.contentView.topAnchor, constant: 0.0),
+                vc.view.leftAnchor.constraint(equalTo: surfaceView.contentView.leftAnchor, constant: 0.0),
+                vc.view.rightAnchor.constraint(equalTo: surfaceView.contentView.rightAnchor, constant: 0.0),
+                vc.view.bottomAnchor.constraint(equalTo: surfaceView.contentView.bottomAnchor, constant: 0.0),
+                ])
+            addChild(vc)
+            vc.didMove(toParent: self)
+        }
+
+        _contentViewController = contentViewController
     }
 
-    public override func showDetailViewController(_ vc: UIViewController, sender: Any?) {
-        show(vc)
+    @available(*, unavailable, renamed: "set(contentViewController:)")
+    public override func show(_ vc: UIViewController, sender: Any?) {
+        fatalError("Not allowed to use 'Show' kind segue from the controller. Please add another floating panel to show a detail or add a navigation controller in a content view controller")
     }
-    
-    private func show(_ vc: UIViewController) {
-        let surfaceView = self.view as! FloatingPanelSurfaceView
-        surfaceView.contentView.addSubview(vc.view)
-        vc.view.frame = surfaceView.contentView.bounds
-        vc.view.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            vc.view.topAnchor.constraint(equalTo: surfaceView.contentView.topAnchor, constant: 0.0),
-            vc.view.leftAnchor.constraint(equalTo: surfaceView.contentView.leftAnchor, constant: 0.0),
-            vc.view.rightAnchor.constraint(equalTo: surfaceView.contentView.rightAnchor, constant: 0.0),
-            vc.view.bottomAnchor.constraint(equalTo: surfaceView.contentView.bottomAnchor, constant: 0.0),
-            ])
-        addChild(vc)
-        vc.didMove(toParent: self)
+
+    @available(*, unavailable, message: "set(contentViewController:)")
+    public override func showDetailViewController(_ vc: UIViewController, sender: Any?) {
+        fatalError("Not allowed to use 'Show Detail' kind segue from the controller. Please add another floating panel to show a detail or add a navigation controller in a content view controller")
     }
 
     // MARK: - Scroll view tracking

@@ -96,14 +96,14 @@ class ViewController: UIViewController, FloatingPanelControllerDelegate {
         // Assign self as the delegate of the controller.
         fpc.delegate = self // Optional
 
-        // Add a content view controller.
+        // Set a content view controller.
         let contentVC = ContentViewController()
-        fpc.show(contentVC, sender: nil)
+        fpc.set(viewController: contentVC)
 
         // Track a scroll view(or the siblings) in the content view controller.
         fpc.track(scrollView: contentVC.tableView)
 
-        // Add the views managed by the `FloatingPanelController` object to self.view.
+        // Add and show the views managed by the `FloatingPanelController` object to self.view.
         fpc.addPanel(toParent: self)
     }
 
@@ -222,7 +222,7 @@ class ViewController: UIViewController, FloatingPanelControllerDelegate {
         self.searchPanelVC = FloatingPanelController()
 
         let searchVC = SearchViewController()
-        self.searchPanelVC.show(searchVC, sender: nil)
+        self.searchPanelVC.set(viewController: searchVC)
         self.searchPanelVC.track(scrollView: contentVC.tableView)
 
         self.searchPanelVC.addPanel(toParent: self)
@@ -231,7 +231,7 @@ class ViewController: UIViewController, FloatingPanelControllerDelegate {
         self.detailPanelVC = FloatingPanelController()
 
         let contentVC = ContentViewController()
-        self.detailPanelVC.show(contentVC, sender: nil)
+        self.searchPanelVC.set(viewController: contentVC)
         self.detailPanelVC.track(scrollView: contentVC.scrollView)
 
         self.detailPanelVC.addPanel(toParent: self)
