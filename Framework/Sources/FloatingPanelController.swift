@@ -242,7 +242,22 @@ public class FloatingPanelController: UIViewController, UIScrollViewDelegate, UI
     }
 
     /// Presents the specified view controller as the content view controller in the surface view interface.
+    ///
+    /// - Attention:
+    ///     You can't use this method to replace the content view controller.
     public override func show(_ vc: UIViewController, sender: Any?) {
+        if self.children.first != nil, let ancester = self.parent?.targetViewController(forAction: #selector(show(_:sender:)), sender: sender) {
+            ancester.show(vc, sender: sender)
+            return
+        }
+        show(vc)
+    }
+
+    public override func showDetailViewController(_ vc: UIViewController, sender: Any?) {
+        show(vc)
+    }
+    
+    private func show(_ vc: UIViewController) {
         let surfaceView = self.view as! FloatingPanelSurfaceView
         surfaceView.contentView.addSubview(vc.view)
         vc.view.frame = surfaceView.contentView.bounds
