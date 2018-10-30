@@ -260,6 +260,11 @@ class DetailViewController: UIViewController {
         // dismiss(animated: true, completion: nil)
         (self.parent as? FloatingPanelController)?.removePanelFromParent(animated: true, completion: nil)
     }
+
+    @IBAction func buttonPressed(_ sender: Any) {
+        performSegue(withIdentifier: "ShowSegue", sender: self)
+    }
+
     @IBAction func tapped(_ sender: Any) {
         print("Detail panel is tapped!")
     }
