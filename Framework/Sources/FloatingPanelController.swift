@@ -114,6 +114,8 @@ public class FloatingPanelController: UIViewController, UIScrollViewDelegate, UI
         floatingPanel = FloatingPanel(self,
                                       layout: fetchLayout(for: self.traitCollection),
                                       behavior: fetchBehavior(for: self.traitCollection))
+
+        set(contentViewController: contentViewController)
     }
 
     /// Creates the view that the controller manages.
@@ -278,7 +280,7 @@ public class FloatingPanelController: UIViewController, UIScrollViewDelegate, UI
         fatalError("Not allowed to use 'Show' kind segue from the controller. Please add another floating panel to show a detail or add a navigation controller in a content view controller")
     }
 
-    @available(*, unavailable, message: "set(contentViewController:)")
+    @available(*, unavailable, renamed: "set(contentViewController:)")
     public override func showDetailViewController(_ vc: UIViewController, sender: Any?) {
         fatalError("Not allowed to use 'Show Detail' kind segue from the controller. Please add another floating panel to show a detail or add a navigation controller in a content view controller")
     }

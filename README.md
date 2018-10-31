@@ -279,6 +279,13 @@ class ViewController: UIViewController, FloatingPanelControllerDelegate {
 
 ## Notes
 
+### 'Show' or 'Show Detail' Segues from `FloatingPanelController`
+
+'Show' or 'Show Detail' segues from a floating panel don't work because it isn't any way to display a view controller on a secondary context with push or replace.
+Instead of them, please add another floating panel to show a detail content or add a navigation controller in a content view controller.
+
+If you use "Show" or "Show Detail" segue from a floating panel, it will raise a fatal error.
+
 ###  FloatingPanelSurfaceView's issue on iOS 10
 
 * On iOS 10,   `FloatingPanelSurfaceView.cornerRadius` isn't not automatically masked with the top rounded corners  because of UIVisualEffectView issue. See https://forums.developer.apple.com/thread/50854. 
