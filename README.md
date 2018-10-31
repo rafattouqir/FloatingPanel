@@ -281,10 +281,33 @@ class ViewController: UIViewController, FloatingPanelControllerDelegate {
 
 ### 'Show' or 'Show Detail' Segues from `FloatingPanelController`
 
-'Show' or 'Show Detail' segues from a floating panel don't work because it isn't any way to display a view controller on a secondary context with push or replace.
-Instead of them, please add another floating panel to show a detail content or add a navigation controller in a content view controller.
+Basically 'Show' or 'Show Detail' segues from a content view controller of a floating panel don't work because `FloatingPanelController` has no way to manage a stack of view controllers. If it has the stack, it would be so complicated and the interface will become `UINavigationController`. It should be out of responsibility of this component.
 
-If you use "Show" or "Show Detail" segue from a floating panel, it will raise a fatal error.
+However, you have a simple way for them to work by yourself if you want to handle the 'Show' or 'Show Detail' segues.
+
+Here is an example of the way.
+
+```swift
+class ViewController: UIViewController {
+    var fpc: FloatingPanelController!
+    var secondFpc: FloatingPanelController!
+
+    ...
+    override func show(_ vc: UIViewController, sender: Any?) {
+        fpc.removePanelFromParent(animated: true)
+
+        secondFpc = FloatingPanelController()
+
+        secondFpc.set(contentViewController: vc)
+
+        secondFpc.addPanel(toParent: self)
+    }
+    ...
+}
+```
+
+A `FloatingPanelController` object propagates an action for `show(_:sender)` to the parent. That's why a view controller managing it can handle a destination view controller of a 'Show' or 'Show Detail' segue as `vc` value in the method, and then present the destination view controller in a secondary floating panel.
+
 
 ###  FloatingPanelSurfaceView's issue on iOS 10
 

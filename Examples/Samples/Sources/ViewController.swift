@@ -261,7 +261,6 @@ class DetailViewController: UIViewController {
     }
 
     @IBAction func buttonPressed(_ sender: Any) {
-        // A fatal error will occurs
         performSegue(withIdentifier: "ShowSegue", sender: self)
     }
 

@@ -277,12 +277,16 @@ public class FloatingPanelController: UIViewController, UIScrollViewDelegate, UI
 
     @available(*, unavailable, renamed: "set(contentViewController:)")
     public override func show(_ vc: UIViewController, sender: Any?) {
-        fatalError("Not allowed to use 'Show' kind segue from the controller. Please add another floating panel to show a detail or add a navigation controller in a content view controller")
+        if let target = self.parent?.targetViewController(forAction: #selector(UIViewController.show(_:sender:)), sender: sender) {
+            target.show(vc, sender: sender)
+        }
     }
 
     @available(*, unavailable, renamed: "set(contentViewController:)")
     public override func showDetailViewController(_ vc: UIViewController, sender: Any?) {
-        fatalError("Not allowed to use 'Show Detail' kind segue from the controller. Please add another floating panel to show a detail or add a navigation controller in a content view controller")
+        if let target = self.parent?.targetViewController(forAction: #selector(UIViewController.showDetailViewController(_:sender:)), sender: sender) {
+            target.showDetailViewController(vc, sender: sender)
+        }
     }
 
     // MARK: - Scroll view tracking
